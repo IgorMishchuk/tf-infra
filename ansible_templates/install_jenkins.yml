@@ -1,0 +1,50 @@
+---
+- hosts: "{{ passed_in_hosts }}"
+  become: yes
+  remote_user: ec2-user
+  become_user: root
+  tasks:
+    - name: Update all packages
+      yum:
+        name: '*'
+        state: latest
+        update_only: yes
+
+    - name: install dependencies
+      yum:
+        name: "{{ package }} "
+        state: present
+        vars:
+        package:
+        - git
+        - amazon-linux-extras
+        - python-pip
+
+    - name: install docker
+      shell: "amazon-linux-extras install docker -y"
+
+    - name: clone repo
+      git:
+        repo: https://github.com/IgorMishchuk/weissbeerger-docker.git
+        dest: /var
+    
+    - name: Enable Docker service at startup
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Ensure Python pip packages are installed
+      pip:
+        name: "{{ packages }}"
+      vars:
+        packages:
+        - docker-compose
+
+    - name: Build and start containers
+      shell: cd /var/weissbeerger-docker && docker-compose up -d
+
+    - name: Wait until Jenkins is up
+      shell: result_first=1; while [[ $result_first != 0 ]]; do if [[ `docker logs jenkins | grep 'Jenkins is fully up and running'` ]];then result_first=0;else sleep 4;fi;done
+      register: result
+      until: result.rc == 0
