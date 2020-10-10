@@ -58,7 +58,7 @@
           executable: /bin/bash
 
       - name: Wait until Jenkins is up
-        shell: result_first=1; while [[ $result_first != 0 ]]; do if [[ `docker logs jenkins | grep 'Jenkins is fully up and running'` ]];then result_first=0;else sleep 4;fi;done
+        shell: result_first=1; while [[ $result_first != 0 ]]; do if [[ `docker logs jenkins 2>&1 | grep 'Jenkins is fully up and running'` ]];then result_first=0;else sleep 4;fi;done
         register: result
         until: result.rc == 0
       become_user: ec2-user
