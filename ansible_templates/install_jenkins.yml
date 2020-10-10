@@ -41,8 +41,13 @@
           repo: https://github.com/IgorMishchuk/weissbeerger-docker.git
           dest: ./weissbeerger-docker
       
-      - name: Ensure docker-compose is installed
-        shell: pip3 install docker-compose --user
+      # - name: Ensure docker-compose is installed
+      #   shell: pip3 install docker-compose --user
+    - name: Ensure docker-compose is installed and available
+      get_url: 
+        url : https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)
+        dest: /usr/local/bin/docker-compose
+        mode: 'u+x,g+x'
 
       - name: Build and start containers
         shell: docker-compose up -d
