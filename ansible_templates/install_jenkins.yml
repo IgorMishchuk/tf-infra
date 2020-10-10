@@ -37,6 +37,7 @@
     - name: Ensure Python pip packages are installed
       pip:
         name: "{{ package }}"
+        executable: pip3
       vars:
         package:
         - docker-compose
