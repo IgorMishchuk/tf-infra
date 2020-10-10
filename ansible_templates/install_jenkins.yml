@@ -23,29 +23,37 @@
     - name: install docker
       shell: "amazon-linux-extras install docker -y"
 
-    - name: clone repo
-      git:
-        repo: https://github.com/IgorMishchuk/weissbeerger-docker.git
-        dest: /var/weissbeerger-docker
-    
     - name: Enable Docker service at startup
       service:
         name: docker
         state: started
         enabled: yes
 
-    - name: Ensure Python pip packages are installed
-      pip:
-        name: "{{ package }}"
-        executable: pip3
-      vars:
-        package:
-        - docker-compose
+    - name: Add ec2-user to docker group
+      user:
+        name: ec2-user
+        append: yes
+        groups: docker
 
-    - name: Build and start containers
-      shell: cd /var/weissbeerger-docker && docker-compose up -d
+    - block:
+      - name: clone repo
+        git:
+          repo: https://github.com/IgorMishchuk/weissbeerger-docker.git
+          dest: /var/weissbeerger-docker
+      
+      - name: Ensure Python pip packages are installed
+        pip:
+          name: "{{ package }}"
+          executable: pip3
+        vars:
+          package:
+          - docker-compose
 
-    - name: Wait until Jenkins is up
-      shell: result_first=1; while [[ $result_first != 0 ]]; do if [[ `docker logs jenkins | grep 'Jenkins is fully up and running'` ]];then result_first=0;else sleep 4;fi;done
-      register: result
-      until: result.rc == 0
+      - name: Build and start containers
+        shell: cd /var/weissbeerger-docker && docker-compose up -d
+
+      - name: Wait until Jenkins is up
+        shell: result_first=1; while [[ $result_first != 0 ]]; do if [[ `docker logs jenkins | grep 'Jenkins is fully up and running'` ]];then result_first=0;else sleep 4;fi;done
+        register: result
+        until: result.rc == 0
+      become_user: ec2-user
