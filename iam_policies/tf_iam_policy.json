@@ -15,7 +15,7 @@
                 "dynamodb:UpdateItem",
                 "dynamodb:UpdateTable"
             ],
-            "Resource": "arn:aws:dynamodb:eu-west-3:253015811624:table/tf-state-lock"
+            "Resource": "arn:aws:dynamodb:eu-west-1:253015811624:table/tf-state-lock"
         },
         {
             "Sid": "DDBindex",
@@ -24,7 +24,7 @@
                 "dynamodb:Scan",
                 "dynamodb:Query"
             ],
-            "Resource": "arn:aws:dynamodb:eu-west-3:253015811624:table/tf-state-lock/index/*"
+            "Resource": "arn:aws:dynamodb:eu-west-1:253015811624:table/tf-state-lock/index/*"
         },
         {
             "Sid": "General",

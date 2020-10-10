@@ -221,11 +221,18 @@ resource "aws_security_group" "jenkins-sg" {
     cidr_blocks = [var.external_ip]
   }
   ingress {
-    description = "allow traffic from eu-west-3"
+    description = "allow traffic from eu-west-3 TF"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["10.0.0.0/24"]
+    cidr_blocks = ["10.1.0.0/24"]
+  }
+  ingress {
+    description = "allow traffic from eu-west-3 Docker"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["10.2.0.0/24"]
   }
   egress {
     from_port   = 0
