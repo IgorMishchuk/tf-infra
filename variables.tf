@@ -35,5 +35,5 @@ variable "external_ip" {
 
 # TF master IP
 variable "tf_master_ip" {
-  default = "35.180.229.149/32"
+  default = "35.180.19.250/32"
 }

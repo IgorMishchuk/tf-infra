@@ -12,13 +12,13 @@
 
     - name: install dependencies
       yum:
-        name: "{{ package }} "
+        name: "{{ packages }} "
         state: present
       vars:
-        package:
+        packages:
         - git
         - amazon-linux-extras
-        - python-pip
+        - python3-pip
 
     - name: install docker
       shell: "amazon-linux-extras install docker -y"
@@ -36,9 +36,9 @@
 
     - name: Ensure Python pip packages are installed
       pip:
-        name: "{{ packages }}"
+        name: "{{ package }}"
       vars:
-        packages:
+        package:
         - docker-compose
 
     - name: Build and start containers
