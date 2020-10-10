@@ -207,6 +207,13 @@ resource "aws_security_group" "jenkins-sg" {
     cidr_blocks = [var.external_ip]
   }
   ingress {
+    description = "Allow 22 from our public IP"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.tf_master_ip]
+  }
+  ingress {
     description = "allow traffic from our public IP"
     from_port   = 8080
     to_port     = 8080

@@ -7,7 +7,7 @@ output "amiId-eu-west-3" {
 }
 
 output "Jenkins-Main-Node-Public-IP" {
-  value = join(":", ["aws_instance.jenkins-master.public_ip", "8080"]) 
+  value = join(":", [aws_instance.jenkins-master.public_ip, "8080"]) 
 }
 
 output "Jenkins-Main-Node-Private-IP" {
