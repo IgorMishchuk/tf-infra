@@ -14,11 +14,11 @@
       yum:
         name: "{{ package }} "
         state: present
-        vars:
-          package:
-          - git
-          - amazon-linux-extras
-          - python-pip
+      vars:
+        package:
+        - git
+        - amazon-linux-extras
+        - python-pip
 
     - name: install docker
       shell: "amazon-linux-extras install docker -y"
