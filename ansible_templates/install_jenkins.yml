@@ -39,18 +39,13 @@
       - name: clone repo
         git:
           repo: https://github.com/IgorMishchuk/weissbeerger-docker.git
-          dest: /var/weissbeerger-docker
+          dest: ./weissbeerger-docker
       
-      - name: Ensure Python pip packages are installed
-        pip:
-          name: "{{ package }}"
-          executable: pip3
-        vars:
-          package:
-          - docker-compose
+      - name: Ensure docker-compose is installed
+        shell: pip3 install docker-compose --user
 
       - name: Build and start containers
-        shell: cd /var/weissbeerger-docker && docker-compose up -d
+        shell: cd ./weissbeerger-docker && docker-compose up -d
 
       - name: Wait until Jenkins is up
         shell: result_first=1; while [[ $result_first != 0 ]]; do if [[ `docker logs jenkins | grep 'Jenkins is fully up and running'` ]];then result_first=0;else sleep 4;fi;done
