@@ -34,7 +34,8 @@
         name: ec2-user
         append: yes
         groups: docker
-
+      notify: Reset connection
+        
     - name: Ensure docker-compose is installed and available
       get_url: 
         url : https://github.com/docker/compose/releases/download/1.27.4/docker-compose-{{ ansible_system }}-{{ ansible_userspace_architecture }}
@@ -62,3 +63,7 @@
         register: result
         until: result.rc == 0
       become_user: ec2-user
+
+  handlers:
+    - name: Reset connection
+      meta: reset_connection
