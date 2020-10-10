@@ -45,7 +45,10 @@
         shell: pip3 install docker-compose --user
 
       - name: Build and start containers
-        shell: cd ./weissbeerger-docker && docker-compose up -d
+        shell: docker-compose up -d
+        args:
+          chdir: weissbeerger-docker/
+          executable: /bin/bash
 
       - name: Wait until Jenkins is up
         shell: result_first=1; while [[ $result_first != 0 ]]; do if [[ `docker logs jenkins | grep 'Jenkins is fully up and running'` ]];then result_first=0;else sleep 4;fi;done
