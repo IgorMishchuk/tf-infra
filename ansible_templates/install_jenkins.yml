@@ -34,7 +34,9 @@
         name: ec2-user
         append: yes
         groups: docker
-      notify: Reset connection
+
+    - name: Reset connection
+      meta: reset_connection
         
     - name: Ensure docker-compose is installed and available
       get_url: 
@@ -47,10 +49,6 @@
         git:
           repo: https://github.com/IgorMishchuk/weissbeerger-docker.git
           dest: ./weissbeerger-docker
-      
-      # - name: Ensure docker-compose is installed
-      #   shell: pip3 install docker-compose --user
-
 
       - name: Build and start containers
         shell: docker-compose up -d
@@ -63,7 +61,3 @@
         register: result
         until: result.rc == 0
       become_user: ec2-user
-
-  handlers:
-    - name: Reset connection
-      meta: reset_connection
