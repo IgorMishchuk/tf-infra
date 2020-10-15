@@ -8,6 +8,6 @@ Based on [repo](https://github.com/linuxacademy/content-deploying-to-aws-ansible
 
 ### Draft scheme
 
-![scheme](../master/scheme.png)
+![scheme](../master/scheme.png "Scheme")
 
 # Work in progress..
