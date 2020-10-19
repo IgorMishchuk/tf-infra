@@ -47,8 +47,8 @@
     - block:
       - name: clone repo
         git:
-          repo: https://github.com/IgorMishchuk/weissbeerger-docker.git
-          dest: ./weissbeerger-docker
+          repo: https://github.com/IgorMishchuk/jenkins-docker.git
+          dest: ./jenkins-docker
 
       - name: Build and start containers
         shell: docker-compose up -d
