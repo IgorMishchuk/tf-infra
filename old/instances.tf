@@ -6,7 +6,6 @@ data "aws_ssm_parameter" "linuxAmi" {
 
 # Get Linux AMI ID using SSM Parameter endpoint in eu-west-3
 data "aws_ssm_parameter" "linuxAmiWorker" {
-  provider = aws.region-worker
   name     = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
 }
 
@@ -19,7 +18,6 @@ resource "aws_key_pair" "master-key" {
 
 # Create key-pair for logging into EC2 in eu-west-3
 resource "aws_key_pair" "worker-key" {
-  provider   = aws.region-worker
   key_name   = "jenkins"
   public_key = file("~/.ssh/id_rsa.pub")
 }
@@ -32,7 +30,7 @@ resource "aws_instance" "jenkins-master" {
   key_name                    = aws_key_pair.master-key.key_name
   associate_public_ip_address = true
   vpc_security_group_ids      = [aws_security_group.jenkins-sg.id]
-  subnet_id                   = aws_subnet.subnet_1_master.id
+  subnet_id                   = element(module.vpc_main.public_subnets, 0)
   provisioner "local-exec" {
     command = <<EOF
 aws --profile ${var.profile} ec2 wait instance-status-ok --region ${var.region-jenkins} --instance-ids ${self.id} \

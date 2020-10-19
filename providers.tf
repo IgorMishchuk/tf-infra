@@ -8,5 +8,5 @@ provider "aws" {
 provider "aws" {
   profile = var.profile
   region  = var.region-worker
-  alias   = "region-worker"
+  #alias   = "region-worker"
 }

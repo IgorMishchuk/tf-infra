@@ -11,3 +11,5 @@ Based on [repo](https://github.com/linuxacademy/content-deploying-to-aws-ansible
 ![scheme](scheme.png)
 
 # Work in progress..
+
+Code was getting too clunky, hence rewriting with modules.
