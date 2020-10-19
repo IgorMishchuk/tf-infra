@@ -53,7 +53,7 @@
       - name: Build and start containers
         shell: docker-compose up -d
         args:
-          chdir: weissbeerger-docker/
+          chdir: jenkins-docker/
           executable: /bin/bash
 
       - name: Wait until Jenkins is up
