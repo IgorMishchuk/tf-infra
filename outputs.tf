@@ -43,9 +43,9 @@
 # }
 
 output "subnets" {
-    value = module.vpc_main.public_subnets
+  value = module.vpc_main.public_subnets
 }
 
 output "sgs" {
-    value = module.main-sgs["tf-worker"]
+  value = join(",", [module.main-sgs-mgmt.this_security_group_id, module.main-sgs-workers.this_security_group_id])
 }

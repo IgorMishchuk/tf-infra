@@ -35,7 +35,7 @@ variable "external_ip" {
 
 # TF master IP
 variable "tf_master_ip" {
-  default = "35.180.19.250/32"
+  default = "35.181.4.129/32"
 }
 
 variable "workers" {
@@ -44,35 +44,33 @@ variable "workers" {
     tf-worker = {
       cidr          = "10.1.0.0/16",
       instance-type = "t2.micro",
-      name          = "vpc-tf-worker",
-      public_subnet = ["10.1.0.0/24"]
+      name          = "vpc-tf-worker"
     },
     docker-worker = {
       cidr          = "10.2.0.0/16",
       instance-type = "t2.micro",
-      name          = "vpc-docker-worker",
-      public_subnet = ["10.2.0.0/24"]
+      name          = "vpc-docker-worker"
     }
   }
 }
 
-variable "jenkins_main_ip" {
-  default = "10.0.0.0"
+variable "jenkins_main_cidr" {
+  default = "10.0.0.0/16"
 }
 
 variable "sgs" {
   default = {
     ssh = {
       from_port = 22
-      to_port = 22
-      protocol = "tcp"
-      src = "213.111.81.135/32"
+      to_port   = 22
+      protocol  = "tcp"
+      src       = "213.111.81.135/32"
     },
     jenkins_main = {
       from_port = 0
-      to_port = 0
-      protocol = "-1"
-      src = "10.0.0.0/24"
+      to_port   = 0
+      protocol  = "-1"
+      src       = "10.0.0.0/24"
     }
   }
 }

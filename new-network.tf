@@ -10,8 +10,8 @@ module "vpc_main" {
   version        = "~> v2.0"
   azs            = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
   name           = "vpc-jenkins-master"
-  cidr           = join("", [var.jenkins_main_ip, "/16"])
-  public_subnets = [join("", [var.jenkins_main_ip, "/24"])]
+  cidr           = var.jenkins_main_cidr
+  public_subnets = [cidrsubnet(var.jenkins_main_cidr, 8, 0)]
   tags = {
     Name = "vpc-jenkins-master"
   }
@@ -25,7 +25,7 @@ module "vpc_workers" {
   azs            = data.aws_availability_zones.available.names
   name           = each.value.name
   cidr           = each.value.cidr
-  public_subnets = each.value.public_subnet
+  public_subnets = [cidrsubnet(each.value.cidr, 8, 0)]
   tags = {
     Name = each.value.name
   }
@@ -66,46 +66,52 @@ resource "aws_route" "workers_internet" {
 }
 
 module "worker-sgs" {
-  source = "terraform-aws-modules/security-group/aws"
-  version = "~> 3.0"
-  for_each = var.workers
-  vpc_id = module.vpc_workers[each.key].vpc_id
-  name = "worker-sgs"
+  source              = "terraform-aws-modules/security-group/aws"
+  version             = "~> 3.0"
+  for_each            = var.workers
+  vpc_id              = module.vpc_workers[each.key].vpc_id
+  name                = "worker-sgs"
   ingress_cidr_blocks = [var.external_ip]
-  ingress_rules = ["ssh-tcp"]
-  ingress_with_self = [{ rule = "all-all"}]
-  egress_rules      = ["all-all"]
+  ingress_rules       = ["ssh-tcp"]
+  ingress_with_self   = [{ rule = "all-all" }]
+  egress_rules        = ["all-all"]
   ingress_with_cidr_blocks = [
     {
-      from_port = 0
-      to_port = 0
-      protocol = "tcp"
-      cidr_blocks = join("", [var.jenkins_main_ip, "/24"])
+      from_port    = 0
+      to_port      = 0
+      protocol     = "tcp"
+      cidr_blocks  = cidrsubnet(var.jenkins_main_cidr, 8, 0)
       descriptions = "Allow connections from Jenkins main"
     }
   ]
 }
 
-module "main-sgs" {
-  source = "terraform-aws-modules/security-group/aws"
+module "main-sgs-mgmt" {
+  source  = "terraform-aws-modules/security-group/aws"
   version = "~> 3.0"
   providers = {
     aws = aws.region-jenkins
   }
-  for_each = var.workers
-  vpc_id = module.vpc_main.vpc_id
-  name = join("-", ["main-sgs", each.key])
+  vpc_id              = module.vpc_main.vpc_id
+  name                = "main-sgs-mgmt"
   ingress_cidr_blocks = [var.external_ip, var.tf_master_ip]
-  ingress_rules = ["ssh-tcp", "http-80-tcp", "http-8080-tcp"]
-  ingress_with_self = [{ rule = "all-all"}]
-  egress_rules      = ["all-all"]
-  ingress_with_cidr_blocks = [
-    {
-      from_port = 0
-      to_port = 0
-      protocol = "tcp"
-      cidr_blocks = element(each.value.public_subnet, 0)
-      descriptions = "Allow connections from workers"
-    }
+  ingress_rules       = ["ssh-tcp", "http-80-tcp", "http-8080-tcp"]
+  ingress_with_self   = [{ rule = "all-all" }]
+  egress_rules        = ["all-all"]
+
+}
+
+module "main-sgs-workers" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "~> 3.0"
+  providers = {
+    aws = aws.region-jenkins
+  }
+  name   = "main-sgs-workers"
+  vpc_id = module.vpc_main.vpc_id
+  ingress_cidr_blocks = [
+    for worker in var.workers :
+    join(",", [cidrsubnet(worker.cidr, 8, 0)])
   ]
+  ingress_rules = ["all-all"]
 }
