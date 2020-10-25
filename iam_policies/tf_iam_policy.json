@@ -88,6 +88,7 @@
                 "ec2:Describe*",
                 "ec2:DeleteSecurityGroup",
                 "ec2:CreateNetworkAclEntry",
+                "ec2:ModifyNetworkInterfaceAttribute",
                 "ssm:Describe*",
                 "ssm:GetParametersByPath",
                 "ssm:GetParameter",
