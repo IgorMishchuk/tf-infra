@@ -29,7 +29,7 @@ resource "aws_instance" "jenkins-master" {
   instance_type               = var.instance-type
   key_name                    = aws_key_pair.master-key.key_name
   associate_public_ip_address = true
-  vpc_security_group_ids      = [join(", ", [module.main-sgs-mgmt.this_security_group_id, module.main-sgs-workers.this_security_group_id])]
+  vpc_security_group_ids      = [module.main-sgs-mgmt.this_security_group_id, module.main-sgs-workers.this_security_group_id]
   subnet_id                   = element(module.vpc_main.public_subnets, 0)
   provisioner "local-exec" {
     command = <<EOF
