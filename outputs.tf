@@ -6,13 +6,13 @@
 #   value = data.aws_ssm_parameter.linuxAmiWorker.value
 # }
 
-# output "Jenkins-Main-Node-Public-IP" {
-#   value = join(":", [aws_instance.jenkins-master.public_ip, "8080"])
-# }
+output "Jenkins-Main-Node-Public-IP" {
+  value = join(":", [aws_instance.jenkins-master.public_ip, "8080"])
+}
 
-# output "Jenkins-Main-Node-Private-IP" {
-#   value = aws_instance.jenkins-master.private_ip
-# }
+output "Jenkins-Main-Node-Private-IP" {
+  value = aws_instance.jenkins-master.private_ip
+}
 
 # output "Jenkins-Worker-TF-Public-IPs" {
 #   value = {
