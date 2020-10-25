@@ -47,13 +47,13 @@
     - block:
       - name: clone repo
         git:
-          repo: https://github.com/IgorMishchuk/weissbeerger-docker.git
-          dest: ./weissbeerger-docker
+          repo: https://github.com/IgorMishchuk/jenkins-docker.git
+          dest: ./jenkins-docker
 
       - name: Build and start containers
         shell: docker-compose up -d
         args:
-          chdir: weissbeerger-docker/
+          chdir: jenkins-docker/
           executable: /bin/bash
 
       - name: Wait until Jenkins is up
